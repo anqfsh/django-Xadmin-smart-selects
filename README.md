@@ -1,4 +1,4 @@
-Django Smart Selects
+Django-Xadmin Smart Selects
 ====================
 
 
