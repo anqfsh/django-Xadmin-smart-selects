@@ -109,23 +109,26 @@ class ChainedSelect(Select):
                         return;
                     }
                     $.getJSON("%(url)s/"+val+"/", function(j){
-                        var options = '<option value="">%(empty_label)s<'+'/option>';
-                        for (var i = 0; i < j.length; i++) {
-                            options += '<option value="' + j[i].value + '">' + j[i].display + '<'+'/option>';
-                        }
-                        var width = $("#%(id)s").outerWidth();
-                        $("#%(id)s").html(options);
-                        if (navigator.appVersion.indexOf("MSIE") != -1)
-                            $("#%(id)s").width(width + 'px');
-                        $('#%(id)s option:first').attr('selected', 'selected');
-                        var auto_choose = %(auto_choose)s;
-                        if(init_value){
-                            $('#%(id)s option[value="'+ init_value +'"]').attr('selected', 'selected');
-                        }
-                        if(auto_choose && j.length == 1){
-                            $('#%(id)s option[value="'+ j[0].value +'"]').attr('selected', 'selected');
-                        }
-                        $("#%(id)s").trigger('change');
+                       var options = '';
+                       for (var i = 0; i < j.length; i++) {
+                           options += '{' + 'text:"' + j[i].display + '", ' + 'value:' + j[i].value + '}';
+                           if (i < j.length - 1){
+                               options += ','
+                           }
+                           
+                       }
+                       
+                       var json_data = '[' + options + ']';
+                       
+                       var obj = eval ("(" + json_data + ")");
+
+                       
+                       var selectize = $("#%(id)s")[0].selectize;
+                       selectize.clear();
+                       selectize.clearOptions();
+                       selectize.load(function(callback) {
+                           callback(obj);
+                       });
                     })
                 }
 
